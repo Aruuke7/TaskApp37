@@ -1,4 +1,4 @@
-package kg.geektech.taskapp37;
+package kg.geektech.taskapp37.ui.board;
 
 import android.graphics.Color;
 import android.os.Bundle;
@@ -15,12 +15,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import kg.geektech.taskapp37.R;
 import kg.geektech.taskapp37.databinding.FragmentBoardBinding;
 import kg.geektech.taskapp37.interfaces.OnBoardStartClickListener;
+import kg.geektech.taskapp37.adapters.BoardAdapter;
 
 public class BoardFragment extends Fragment {
 
     private FragmentBoardBinding binding;
+    BoardAdapter adapter = new BoardAdapter();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -32,10 +35,40 @@ public class BoardFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        BoardAdapter adapter = new BoardAdapter();
+        initViewPager();
+        initDots();
+        initSkip();
+        clickStart();
+
+        requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                requireActivity().finish();
+            }
+        });
+    }
+
+    private void clickStart() {
+        adapter.setOnBoardStartClickListener(new OnBoardStartClickListener() {
+            @Override
+            public void OnStartClick() {
+                close();
+            }
+        });
+    }
+
+
+    private void initSkip() {
+        binding.btnSkip.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                close();
+            }
+        });
+    }
+
+    private void initViewPager() {
         binding.viewPager.setAdapter(adapter);
-        binding.dotsIndicator.setViewPager2(binding.viewPager);
-        binding.dotsIndicator.setDotsColor(Color.GRAY);
         binding.viewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
             @Override
             public void onPageSelected(int position) {
@@ -48,24 +81,11 @@ public class BoardFragment extends Fragment {
             }
         });
 
-        binding.btnSkip.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                close();
-            }
-        });
-        adapter.setOnBoardStartClickListener(new OnBoardStartClickListener() {
-            @Override
-            public void OnStartClick() {
-               close();
-            }
-        });
-        requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), new OnBackPressedCallback(true) {
-            @Override
-            public void handleOnBackPressed() {
-                requireActivity().finish();
-            }
-        });
+    }
+
+    private void initDots() {
+        binding.dotsIndicator.setViewPager2(binding.viewPager);
+        binding.dotsIndicator.setDotsColor(Color.GRAY);
     }
 
     private void close(){
