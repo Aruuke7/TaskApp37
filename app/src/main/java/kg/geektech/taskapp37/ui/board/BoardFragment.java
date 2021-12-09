@@ -59,16 +59,6 @@ public class BoardFragment extends Fragment {
 
 
     private void initSkip() {
-        binding.btnSkip.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                close();
-            }
-        });
-    }
-
-    private void initViewPager() {
-        binding.viewPager.setAdapter(adapter);
         binding.viewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
             @Override
             public void onPageSelected(int position) {
@@ -81,6 +71,16 @@ public class BoardFragment extends Fragment {
             }
         });
 
+        binding.btnSkip.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                close();
+            }
+        });
+    }
+
+    private void initViewPager() {
+        binding.viewPager.setAdapter(adapter);
     }
 
     private void initDots() {
