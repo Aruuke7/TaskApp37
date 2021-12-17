@@ -1,19 +1,15 @@
 package kg.geektech.taskapp37.ui.home;
 
 import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentResultListener;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import kg.geektech.taskapp37.R;
@@ -42,12 +38,7 @@ public class HomeFragment extends Fragment {
             public void onLongClick(int pos) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
                 builder.setMessage("Вы хотите удалить элемент?");
-                builder.setPositiveButton("Удалить", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        adapter.removeItem(pos);
-                    }
-                });
+                builder.setPositiveButton("Удалить", (dialog, which) -> adapter.removeItem(pos));
                 builder.setNegativeButton("Отмена",null);
                 builder.show();
             }
@@ -61,19 +52,11 @@ public class HomeFragment extends Fragment {
         binding = FragmentHomeBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        binding.fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                openFragment();
-            }
-        });
-        getParentFragmentManager().setFragmentResultListener("rk_news", getViewLifecycleOwner(), new FragmentResultListener() {
-            @Override
-            public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle result) {
-                News news = (News) result.getSerializable("news");
-                Log.e("home", "text: " +news.getTitle());
-                adapter.addItem(news);
-            }
+        binding.fab.setOnClickListener(v -> openFragment());
+        getParentFragmentManager().setFragmentResultListener("rk_news", getViewLifecycleOwner(), (requestKey, result) -> {
+            News news = (News) result.getSerializable("news");
+            Log.e("home", "text: " +news.getTitle());
+            adapter.addItem(news);
         });
         return root;
     }

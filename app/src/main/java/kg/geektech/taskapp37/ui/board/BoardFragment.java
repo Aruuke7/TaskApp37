@@ -15,9 +15,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import kg.geektech.taskapp37.Prefs;
 import kg.geektech.taskapp37.R;
 import kg.geektech.taskapp37.databinding.FragmentBoardBinding;
-import kg.geektech.taskapp37.interfaces.OnBoardStartClickListener;
 import kg.geektech.taskapp37.adapters.BoardAdapter;
 
 public class BoardFragment extends Fragment {
@@ -26,7 +26,7 @@ public class BoardFragment extends Fragment {
     BoardAdapter adapter = new BoardAdapter();
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         binding = FragmentBoardBinding.inflate(inflater,container,false);
         return binding.getRoot();
@@ -49,12 +49,7 @@ public class BoardFragment extends Fragment {
     }
 
     private void clickStart() {
-        adapter.setOnBoardStartClickListener(new OnBoardStartClickListener() {
-            @Override
-            public void OnStartClick() {
-                close();
-            }
-        });
+        adapter.setOnBoardStartClickListener(this::close);
     }
 
 
@@ -71,12 +66,7 @@ public class BoardFragment extends Fragment {
             }
         });
 
-        binding.btnSkip.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                close();
-            }
-        });
+        binding.btnSkip.setOnClickListener(v -> close());
     }
 
     private void initViewPager() {
@@ -89,6 +79,8 @@ public class BoardFragment extends Fragment {
     }
 
     private void close(){
+        Prefs prefs = new Prefs(requireContext());
+        prefs.saveBoardState();
         NavController navController = Navigation.findNavController(requireActivity(), R.id.nav_host_fragment_activity_main);
         navController.navigateUp();
     }

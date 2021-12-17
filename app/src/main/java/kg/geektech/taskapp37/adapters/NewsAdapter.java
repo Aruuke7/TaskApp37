@@ -2,21 +2,17 @@ package kg.geektech.taskapp37.adapters;
 
 import android.graphics.Color;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
-
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-
 import java.util.ArrayList;
-
 import kg.geektech.taskapp37.databinding.RecyclerItemBinding;
 import kg.geektech.taskapp37.interfaces.OnItemClickListener;
 import kg.geektech.taskapp37.models.News;
 
 public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder>{
 
-    private ArrayList<News> list = new ArrayList<>();
+    private final ArrayList<News> list = new ArrayList<>();
     private OnItemClickListener onItemClickListener;
     private RecyclerItemBinding binding;
 
@@ -65,18 +61,10 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder>{
         public ViewHolder(@NonNull RecyclerItemBinding itemView) {
             super(itemView.getRoot());
             binding = itemView;
-            itemView.getRoot().setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    onItemClickListener.onClick(getAdapterPosition());
-                }
-            });
-            binding.getRoot().setOnLongClickListener(new View.OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View v) {
-                    onItemClickListener.onLongClick(getAdapterPosition());
-                    return true;
-                }
+            itemView.getRoot().setOnClickListener(v -> onItemClickListener.onClick(getAdapterPosition()));
+            binding.getRoot().setOnLongClickListener(v -> {
+                onItemClickListener.onLongClick(getAdapterPosition());
+                return true;
             });
         }
 

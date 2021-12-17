@@ -1,42 +1,28 @@
 package kg.geektech.taskapp37.ui.profile;
 
-import static android.app.Activity.RESULT_OK;
-
-import android.Manifest;
-import android.annotation.SuppressLint;
-import android.content.DialogInterface;
+import android.app.AlertDialog;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.drawable.Drawable;
-import android.net.Uri;
 import android.os.Bundle;
-
-import androidx.activity.result.ActivityResult;
-import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
-
-import android.provider.MediaStore;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
-import java.io.FileNotFoundException;
-import java.util.Objects;
-
+import com.bumptech.glide.Glide;
+import kg.geektech.taskapp37.Prefs;
 import kg.geektech.taskapp37.R;
 import kg.geektech.taskapp37.databinding.FragmentProfileBinding;
 
 public class ProfileFragment extends Fragment {
     private FragmentProfileBinding binding;
     private ActivityResultLauncher<Intent> activityResultLauncher;
-    private Uri uri;
+    private boolean change = false;
+
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -47,52 +33,60 @@ public class ProfileFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        activityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
-            @Override
-            public void onActivityResult(ActivityResult result) {
-                if (result.getResultCode() == RESULT_OK && result.getData() != null) {
-                    uri = result.getData().getData();
-                    Bitmap bitmap = null;
-                    try {
-                        bitmap = BitmapFactory.decodeStream(requireContext().getContentResolver().openInputStream(uri));
-                        binding.imageView.setImageBitmap(bitmap);
-                    } catch (FileNotFoundException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        });
+        Prefs prefs = new Prefs(requireContext());
+        saveImage(prefs);
+        saveUserName(prefs);
 
-        binding.imageView.setOnClickListener(new View.OnClickListener() {
-            @SuppressLint("QueryPermissionsNeeded")
-            @Override
-            public void onClick(View v) {
-                if (uri == null) {
-                   takePhoto();
-                } else {
-                    final CharSequence[] options = {"Выбрать фото", "Удалить фото"};
-                    AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
-                    builder.setItems(options, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int item) {
-                            if (options[item].equals("Выбрать фото")) {
-                                takePhoto();
-                            } else if (options[item].equals("Удалить фото")) {
-                                binding.imageView.setImageResource(R.drawable.ic_baseline_supervisor_account_24);
-                                uri = null;
-                            }
-                        }
-                    });
-                    builder.show();
-                }
-            }
-        });
-    }
+        if (!prefs.isImageSave().equals("")) {
+            Glide.with(binding.imageView).load(prefs.isImageSave()).into(binding.imageView);
+            change = true;
 
-    void takePhoto() {
-        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        if (intent.resolveActivity(requireActivity().getPackageManager()) != null) {
-            activityResultLauncher.launch(intent);
         }
+
     }
-}
+
+
+    private void saveUserName(Prefs prefs) {
+        binding.editText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                prefs.saveText(s.toString());
+            }
+        });
+
+        binding.editText.setText(prefs.isTextSave());
+    }
+
+    private void saveImage(Prefs prefs) {
+        ActivityResultLauncher<String> mGetContent = registerForActivityResult(new ActivityResultContracts.GetContent(),
+                uri -> {
+                    Glide.with(binding.imageView).load(uri).into(binding.imageView);
+                    prefs.saveImage(uri);
+                    binding.imageView.setImageURI(uri);
+                    change = true;
+
+                });
+
+        binding.imageView.setOnClickListener(v -> {
+            if (change) {
+                AlertDialog.Builder builder = new android.app.AlertDialog.Builder(requireContext());
+                builder.setNeutralButton("Выбрать", (dialog, which) -> mGetContent.launch("image/*"));
+                builder.setPositiveButton("Удалить", (dialog, which) -> binding.imageView.setImageResource(R.drawable.ic_baseline_supervisor_account_24));
+                AlertDialog dialog = builder.create();
+                dialog.show();
+                change = false;
+            }else{
+                        mGetContent.launch("image/*"); }
+                });
+            }
+        }

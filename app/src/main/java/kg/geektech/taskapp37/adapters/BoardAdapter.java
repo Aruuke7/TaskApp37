@@ -14,9 +14,9 @@ public class BoardAdapter extends RecyclerView.Adapter<BoardAdapter.ViewHolder> 
 
     private ItemBoardBinding binding;
     private OnBoardStartClickListener onBoardStartClickListener;
-    private String[] titles = {"Идея", "Навигация","Адрес"};
-    private String[] descriptions = {"Идеи для сторис", "Навигация для сторис","Как нас найти"};
-    private int[] images = {R.drawable.img, R.drawable.img_2, R.drawable.img_1};
+    private final String[] titles = {"Идея", "Навигация","Адрес"};
+    private final String[] descriptions = {"Идеи для сторис", "Навигация для сторис","Как нас найти"};
+    private final int[] images = {R.drawable.img, R.drawable.img_2, R.drawable.img_1};
 
     @NonNull
     @Override
@@ -42,12 +42,7 @@ public class BoardAdapter extends RecyclerView.Adapter<BoardAdapter.ViewHolder> 
         public ViewHolder(@NonNull ItemBoardBinding itemView) {
             super(itemView.getRoot());
             binding = itemView;
-            binding.btnStart.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    onBoardStartClickListener.OnStartClick();
-                }
-            });
+            binding.btnStart.setOnClickListener(v -> onBoardStartClickListener.OnStartClick());
         }
 
         public void bind(int position) {
