@@ -20,7 +20,7 @@ import kg.geektech.taskapp37.databinding.FragmentProfileBinding;
 
 public class ProfileFragment extends Fragment {
     private FragmentProfileBinding binding;
-    private ActivityResultLauncher<Intent> activityResultLauncher;
+    private ActivityResultLauncher<String> activityResultLauncher;
     private boolean change = false;
 
     @Override
@@ -63,30 +63,28 @@ public class ProfileFragment extends Fragment {
                 prefs.saveText(s.toString());
             }
         });
-
         binding.editText.setText(prefs.isTextSave());
     }
 
     private void saveImage(Prefs prefs) {
-        ActivityResultLauncher<String> mGetContent = registerForActivityResult(new ActivityResultContracts.GetContent(),
+        activityResultLauncher = registerForActivityResult(new ActivityResultContracts.GetContent(),
                 uri -> {
                     Glide.with(binding.imageView).load(uri).into(binding.imageView);
                     prefs.saveImage(uri);
                     binding.imageView.setImageURI(uri);
                     change = true;
-
                 });
 
         binding.imageView.setOnClickListener(v -> {
             if (change) {
                 AlertDialog.Builder builder = new android.app.AlertDialog.Builder(requireContext());
-                builder.setNeutralButton("Выбрать", (dialog, which) -> mGetContent.launch("image/*"));
+                builder.setNeutralButton("Выбрать", (dialog, which) -> activityResultLauncher.launch("image/*"));
                 builder.setPositiveButton("Удалить", (dialog, which) -> binding.imageView.setImageResource(R.drawable.ic_baseline_supervisor_account_24));
                 AlertDialog dialog = builder.create();
                 dialog.show();
                 change = false;
             }else{
-                        mGetContent.launch("image/*"); }
+                        activityResultLauncher.launch("image/*"); }
                 });
             }
         }
