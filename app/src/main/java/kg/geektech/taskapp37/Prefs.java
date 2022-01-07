@@ -36,20 +36,20 @@ public class Prefs {
         preferences.edit().putString("image",image.toString()).apply();
     }
 
-    public String isImageSave(){
+    public String getSavedImage(){
         return preferences.getString("image",null);
     }
 
     public  void saveEmail(String email){
         preferences.edit().putString("email", email).apply();
     }
-    public String isEmailSave(){ return  preferences.getString("email",null);}
+    public String getSavedEmail(){ return  preferences.getString("email",null);}
 
     public void savePhone(String phone){
         preferences.edit().putString("phone",phone).apply();
     }
 
-    public String isPhoneSave(){
+    public String getSavedPnone(){
         return preferences.getString("phone",null);
     }
 
@@ -57,7 +57,7 @@ public class Prefs {
         preferences.edit().putString("gender",gender).apply();
     }
 
-    public String isGenderSave(){
+    public String getSavedGender(){
         return preferences.getString("gender",null);
     }
 
@@ -65,7 +65,11 @@ public class Prefs {
         preferences.edit().putString("date",date).apply();
     }
 
-    public String isDateSave(){
+    public String getSavedDate(){
         return  preferences.getString("date",null);
+    }
+
+    public void deleteUserImage(Uri image) {
+        preferences.edit().remove(String.valueOf(image)).apply();
     }
 }

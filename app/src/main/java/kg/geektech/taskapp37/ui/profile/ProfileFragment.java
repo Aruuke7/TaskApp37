@@ -1,8 +1,6 @@
 package kg.geektech.taskapp37.ui.profile;
 
 import android.app.AlertDialog;
-import android.content.DialogInterface;
-import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -16,14 +14,13 @@ import androidx.navigation.Navigation;
 
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 
-import kg.geektech.taskapp37.PhotoFragment;
 import kg.geektech.taskapp37.Prefs;
 import kg.geektech.taskapp37.R;
 import kg.geektech.taskapp37.databinding.FragmentProfileBinding;
@@ -48,26 +45,42 @@ public class ProfileFragment extends Fragment {
         saveImage(prefs);
         saveData(prefs);
         sharePhoto(prefs);
+        initClick();
 
-        if (prefs.isImageSave() != null) {
-            Glide.with(binding.imageView).load(prefs.isImageSave()).into(binding.imageView);
+
+        if (!prefs.getSavedImage().equals("")) {
+            Glide.with(binding.imageView).load(prefs.getSavedImage()).into(binding.imageView);
             change = true;
         }
     }
 
     private void sharePhoto(Prefs prefs) {
-        binding.imageView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                    NavController navController = Navigation.findNavController(requireActivity(), R.id.nav_host_fragment_activity_main);
-                    Bundle bundle = new Bundle();
-                    bundle.putString("photo", prefs.isImageSave());
-                    navController.navigate(R.id.photoFragment,bundle);
-            }
+        binding.imageView.setOnClickListener(v -> {
+            if (!prefs.getSavedImage().equals("")) {
+                NavController navController = Navigation.findNavController(requireActivity(), R.id.nav_host_fragment_activity_main);
+                Bundle bundle = new Bundle();
+                bundle.putString("photo", prefs.getSavedImage());
+                navController.navigate(R.id.photoFragment, bundle);
+
+            } else
+                Toast.makeText(requireContext(), "Фотография отсутствует", Toast.LENGTH_LONG).show();
         });
     }
 
 
+    private void initClick() {
+        binding.signOut.setOnClickListener(v -> {
+
+            new AlertDialog.Builder(requireContext())
+                    .setMessage("Do you want to log out?")
+                    .setPositiveButton("Yes", (dialog, which) -> {
+                        NavController navController = Navigation.findNavController(requireActivity(), R.id.nav_host_fragment_activity_main);
+                        navController.navigate(R.id.loginFragment);
+                    })
+                    .setNegativeButton("Cancel", null)
+                    .show();
+        });
+    }
 
     private void saveData(Prefs prefs) {
         binding.username.addTextChangedListener(new TextWatcher() {
@@ -102,7 +115,7 @@ public class ProfileFragment extends Fragment {
             prefs.saveEmail(s.toString());
             }
         });
-        binding.email.setText(prefs.isEmailSave());
+        binding.email.setText(prefs.getSavedEmail());
 
         binding.phone.addTextChangedListener(new TextWatcher() {
             @Override
@@ -120,7 +133,7 @@ public class ProfileFragment extends Fragment {
             prefs.savePhone(s.toString());
             }
         });
-        binding.phone.setText(prefs.isPhoneSave());
+        binding.phone.setText(prefs.getSavedPnone());
 
         binding.gender.addTextChangedListener(new TextWatcher() {
             @Override
@@ -139,7 +152,7 @@ public class ProfileFragment extends Fragment {
             }
         });
 
-        binding.gender.setText(prefs.isGenderSave());
+        binding.gender.setText(prefs.getSavedGender());
 
         binding.date.addTextChangedListener(new TextWatcher() {
             @Override
@@ -157,14 +170,14 @@ public class ProfileFragment extends Fragment {
             prefs.saveDate(s.toString());
             }
         });
-        binding.date.setText(prefs.isDateSave());
+        binding.date.setText(prefs.getSavedDate());
     }
 
 
     private void saveImage(Prefs prefs) {
         activityResultLauncher = registerForActivityResult(new ActivityResultContracts.GetContent(),
                 uri -> {
-            if (prefs.isImageSave() != null) {
+            if (prefs.getSavedImage() != null) {
                 Glide.with(binding.imageView).load(uri).into(binding.imageView);
                 prefs.saveImage(uri);
                 binding.imageView.setImageURI(uri);
@@ -173,6 +186,8 @@ public class ProfileFragment extends Fragment {
                 binding.imageView.setImageResource(R.drawable.ic_baseline_supervisor_account_24);
             }
                 });
+
+
 
         binding.addPhoto.setOnClickListener(v -> {
             if (change) {
@@ -183,6 +198,7 @@ public class ProfileFragment extends Fragment {
                                 activityResultLauncher.launch("image/*");
                             }else  if (options[which].equals(options[1])){
                                 binding.imageView.setImageResource(R.drawable.ic_baseline_supervisor_account_24);
+                                prefs.deleteUserImage(Uri.parse(prefs.getSavedImage()));
                             }
                         }).show();
             } else {

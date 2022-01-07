@@ -34,7 +34,6 @@ public class PhotoFragment extends Fragment {
         savePhoto();
 
         requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), new OnBackPressedCallback(true) {
-            @SuppressLint("ResourceType")
             @Override
             public void handleOnBackPressed() {
                 NavController navController = Navigation.findNavController(requireActivity(),R.id.nav_host_fragment_activity_main);
