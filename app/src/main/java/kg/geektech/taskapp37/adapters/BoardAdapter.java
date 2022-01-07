@@ -16,7 +16,7 @@ public class BoardAdapter extends RecyclerView.Adapter<BoardAdapter.ViewHolder> 
     private OnBoardStartClickListener onBoardStartClickListener;
     private final String[] titles = {"Идея", "Навигация","Адрес"};
     private final String[] descriptions = {"Идеи для сторис", "Навигация для сторис","Как нас найти"};
-    private final int[] images = {R.drawable.img, R.drawable.img_2, R.drawable.img_1};
+    private final int[] animations = {R.raw.idea, R.raw.store, R.raw.navigation};
 
     @NonNull
     @Override
@@ -46,7 +46,7 @@ public class BoardAdapter extends RecyclerView.Adapter<BoardAdapter.ViewHolder> 
         }
 
         public void bind(int position) {
-            binding.imageView.setImageResource(images[position]);
+            binding.animationView.setAnimation(animations[position]);
             binding.textTitle.setText(titles[position]);
             binding.textDesc.setText(descriptions[position]);
 

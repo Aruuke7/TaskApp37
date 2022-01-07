@@ -37,4 +37,20 @@
         android:name="kg.geektech.taskapp37.ui.board.BoardFragment"
         android:label="fragment_board"
         tools:layout="@layout/fragment_board" />
+    <fragment
+        android:id="@+id/photoFragment"
+        android:name="kg.geektech.taskapp37.PhotoFragment"
+        android:label="fragment_photo"
+        tools:layout="@layout/fragment_photo" />
+
+    <fragment
+        android:id="@+id/loginFragment"
+        android:name="kg.geektech.taskapp37.ui.auth.LoginFragment"
+        android:label="fragment_login"
+        tools:layout="@layout/fragment_login" />
+
+    <activity
+        android:id="@+id/mainActivity"
+        android:name="kg.geektech.taskapp37.MainActivity"
+        android:label="MainActivity" />
 </navigation>

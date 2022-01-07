@@ -1,15 +1,29 @@
 package kg.geektech.taskapp37.models;
 
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+
 import java.io.Serializable;
 
+@Entity(tableName = "news")
 public class News implements Serializable {
 
+    @PrimaryKey(autoGenerate = true)
+    private int id;
     private String title;
     private long createdAt;
 
     public News(String title, long createdAt) {
         this.title = title;
         this.createdAt = createdAt;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public long getCreatedAt() {

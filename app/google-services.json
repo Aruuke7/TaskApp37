@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "401486375725",
+    "project_id": "taskapp37-e63b7",
+    "storage_bucket": "taskapp37-e63b7.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:401486375725:android:2d9d92ba95c3df897381a4",
+        "android_client_info": {
+          "package_name": "kg.geektech.taskapp37"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "401486375725-t95v2o5b70bnj583gj83aejg69f62jgk.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDAm_VMG7dtx5x6Dxgjw1eYLzr9LIKLi0g"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "401486375725-t95v2o5b70bnj583gj83aejg69f62jgk.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
